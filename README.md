@@ -26,3 +26,7 @@ SFML_DYNAMIC
 10. Go to Linker -> System -> ensure subSystem is set to Console (/SUBSYSTEM:CONSOLE)
 11.Attempt to compile again
 12. If it still doesn't work contact me.
+
+
+If Problems occur with a file made by us ->>> Solution Explorer -> show all files -> right click on select file(would have red on it) -> 
+  include in project -> repeat for all selfmade files not included (.h // .cpp)
