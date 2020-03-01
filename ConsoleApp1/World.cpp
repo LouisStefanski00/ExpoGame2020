@@ -20,11 +20,9 @@ void World::createMap(int mapWidth, int mapHeight)
 			}
 			else if (i < 5) {
 				this->map.push_back(tile{ j, i, '=' });
-
 			}
 			else {
 				this->map.push_back(tile{ j, i, '*' });
-
 			}
 		}
 	}
