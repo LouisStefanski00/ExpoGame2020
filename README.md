@@ -4,6 +4,7 @@ TO GET WORKING
 
 1. Rename ConsoleApp1 folder to ConsoleApplication1
 2. Go to ExpoGame2020-master -> open "ConsoleApplication1" (visual studio file).
+2.1. Properties -> Configuration Manager - > set to debug -> x86 -> Win32
 3. Once file is open, go to Project -> Properties
 4. From here: C/C++ - >General -> set Additional Include Directories to $(SolutionDir)/external/sfml/include
 5. Go to Linker -> General -> Additional Library Directories. Set to $(SolutionDir)/external/sfml/lib
