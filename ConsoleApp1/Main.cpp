@@ -4,16 +4,16 @@ Please do not store functions or variables inside of this file unless absolutely
 */
 
 #include "common.h" //common.h holds key precompilers 
-#include "Variables.h"
 #include "Functions.h"
 #include "World.h"
 #include "EventHandler.h"
 #include "Player.h"
+#include "PickUp.h"
 
 /*
 TO DO
 ------
-ADD PICKUPS 
+Updated files --- all of them...
 ADD ENEMYS
 ADD SPECIAL TILES?
 IMPROVE MAP GENERATION
@@ -31,6 +31,7 @@ int main()
     Player players;
     players.setLocation(playerStartPositionX, playerStartPositionY);
     world.createMap(mapWidth, mapLength); //creates map of n^2 where n is length. Note: length and width should be equal. 
+    world.generateEntities(3);
     loadTextures(); //loads all texture files and fonts into memory
     players.playerObject.setTexture(&(playerTexture)); //loads player texture
 
@@ -69,13 +70,15 @@ int main()
                     else if (world.map.at(index).z == 'P') {
                         window.draw(getShape(j, i, 2, players));
                     }
+                    else if (world.map.at(index).z == '+') {
+                        window.draw(getShape(j, i, 5, players));
+                    }
                     else {
                         window.draw(getShape(j, i, 1, world));
                     }
                     index += 1;
             }
         }
-
         //displays remaining breaks
         window.draw(players.playerObject); //draws player texture to screen
         window.draw(drawTextToScreen(((tileWidth * mapWidth) - 320), 0, 26, ("Total Breaks Remaining : " + std::to_string(players.currentBreaks))));
