@@ -1,4 +1,7 @@
 #pragma once
+/*
+Handles all events
+*/
 #include "common.h"
 #include <SFML/Graphics.hpp>
 
