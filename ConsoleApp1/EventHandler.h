@@ -1,10 +1,8 @@
 #pragma once
-/*
-Handles all events
-*/
 #include "common.h"
+#include "Player.h"
+#include "Functions.h"
 #include <SFML/Graphics.hpp>
-
 class EventHandler {
 public:
 	template <typename K, typename V>
@@ -53,11 +51,20 @@ inline void EventHandler::input(K& map, V& player)
 // A function to handle all player actions such as movement. 
 { 
 	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) && ((player.x + 1) < map.mapWidth)) { //gets input and checks if move is is map bounds
-		if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != '*')) {  //checks that the tile is a valid tile to move to
+		if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != '*') && (map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != '+')) {  //checks that the tile is a valid tile to move to
 			this->move(player.x + 1, player.y, map, 2, player); //calls moves function for eventhandler
 			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y))); //sets position of playerObject 
 			playerTexture.loadFromFile("textures/player_19.png"); //directional texture 
 			sf::sleep(sf::milliseconds(player.speed * 15.0)); //sleeps for 150ms as to prevent multiple inputs from a single key press
+		}
+		else if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z == '+')) { //when player picks up ability;
+			this->move(player.x + 1, player.y, map, 2, player);
+			int entityPos = findEntityPosition(map, player);
+			map.entities.at(entityPos).ability(player); //performs pickup ability
+			map.entities.erase(map.entities.begin() + (entityPos)); //deletes item from entities and deconstructs it
+			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
+			playerTexture.loadFromFile("textures/player-right.jpg");
+			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))) { //breaks block
 			this->move(player.x + 1, player.y, map, 2, player);
@@ -67,26 +74,44 @@ inline void EventHandler::input(K& map, V& player)
 			sf::sleep(sf::milliseconds(player.speed * 15.0)); 
 		}
 	}
-	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::A)) && ((player.x - 1) >= 0)) {
-		if (map.map.at((player.y * map.mapWidth) + (player.x - 1)).z != '*') {
+
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::A)) && ((player.x - 1) >= 0)) { //moving left
+		if ((map.map.at((player.y * map.mapWidth) + (player.x - 1)).z != '*') && (map.map.at((player.y * map.mapWidth) + (player.x - 1)).z != '+')){
 			this->move(player.x - 1, player.y, map, 1, player);
 			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
-
+			playerTexture.loadFromFile("textures/player-left.jpg");
+			sf::sleep(sf::milliseconds(player.speed * 15.0));
+		}
+		else if ((map.map.at((player.y * map.mapWidth) + (player.x - 1)).z == '+')) { //picks up ability
+			this->move(player.x - 1, player.y, map, 1, player);
+			int entityPos = findEntityPosition(map, player);
+			map.entities.at(entityPos).ability(player); //performs pickup ability
+			map.entities.erase(map.entities.begin() + (entityPos)); //deletes item from entities and deconstructs it
+			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
 			playerTexture.loadFromFile("textures/player-left.jpg");
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))){ //breaks block
 			this->move(player.x - 1, player.y, map, 1, player);
 			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
-
 			player.currentBreaks -= 1;
 			playerTexture.loadFromFile("textures/player-left.jpg");
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 	}
-	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && ((player.y + 1)< map.mapHeight)) {
-		if (map.map.at(((player.y + 1) * map.mapWidth) + (player.x)).z != '*') {
+
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && ((player.y + 1)< map.mapHeight)) { //moving right
+		if ((map.map.at(((player.y + 1) * map.mapWidth) + (player.x)).z != '*') && (map.map.at(((player.y + 1) * map.mapWidth) + (player.x)).z != '+')) {
 			this->move(player.x, player.y + 1, map, 3, player);
+			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
+			playerTexture.loadFromFile("textures/player-down.jpg");
+			sf::sleep(sf::milliseconds(player.speed * 15.0));
+		}
+		else if ((map.map.at(((player.y + 1) * map.mapWidth) + (player.x)).z == '+')) { //picks up ability
+			this->move(player.x, player.y + 1, map, 3, player);
+			int entityPos = findEntityPosition(map, player);
+			map.entities.at(entityPos).ability(player); //performs pickup ability
+			map.entities.erase(map.entities.begin() + (entityPos)); //deletes item from entities and deconstructs it
 			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
 			playerTexture.loadFromFile("textures/player-down.jpg");
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
@@ -99,9 +124,19 @@ inline void EventHandler::input(K& map, V& player)
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 	}
-	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && ((player.y - 1) >= 0)) {
-		if (map.map.at((((player.y - 1) * map.mapWidth)) + player.x).z != '*') {
+
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && ((player.y - 1) >= 0)) { //moving up
+		if ((map.map.at((((player.y - 1) * map.mapWidth)) + player.x).z != '*') && (map.map.at((((player.y - 1) * map.mapWidth)) + player.x).z != '+')) {
 			this->move(player.x, player.y - 1, map, 4, player);
+			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
+			playerTexture.loadFromFile("textures/player-up.jpg");
+			sf::sleep(sf::milliseconds(player.speed * 15.0));
+		}
+		else if ((map.map.at((((player.y - 1) * map.mapWidth)) + player.x).z == '+')) { //picksup ability
+			this->move(player.x, player.y - 1, map, 4, player);
+			int entityPos = findEntityPosition(map, player);
+			map.entities.at(entityPos).ability(player); //performs pickup ability
+			map.entities.erase(map.entities.begin() + (entityPos)); //deletes item from entities and deconstructs it
 			player.playerObject.setPosition(sf::Vector2f((tileWidth * player.x), (tileLength * player.y)));
 			playerTexture.loadFromFile("textures/player-up.jpg");
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
