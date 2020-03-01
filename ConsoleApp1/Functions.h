@@ -50,3 +50,14 @@ void loadTextures() { //a function to load all required game textures and fonts
     //icons
     icon.loadFromFile("textures/dirt.png"); //loads window icon
 }
+
+template <typename K, typename V>
+int findEntityPosition(K& map, V& player) {
+    int entityPos;
+    for (int i = 0; i < map.entities.size(); ++i) {
+        if ((map.entities.at(i).x == player.x) && (map.entities.at(i).y == player.y)) {
+            entityPos = i;
+        }
+    }
+    return entityPos;
+}
