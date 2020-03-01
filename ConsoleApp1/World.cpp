@@ -20,11 +20,21 @@ void World::createMap(int mapWidth, int mapHeight)
 			}
 			else if (i < 5) {
 				this->map.push_back(tile{ j, i, '=' });
+
 			}
 			else {
 				this->map.push_back(tile{ j, i, '*' });
+
 			}
 		}
+	}
+}
+
+void World::generateEntities(int numOfEntities) {
+	for (int i = 0; i < numOfEntities; ++i) {
+		PickUp* pickUp = new PickUp;
+		this->map.at(((pickUp->y * mapWidth) + pickUp->x)).z = '+';
+		this->entities.push_back(*pickUp);
 	}
 }
 
