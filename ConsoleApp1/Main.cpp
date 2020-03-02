@@ -2,6 +2,7 @@
 The main loop for the game, calls event handlers and stores key class objects [PLAYER, WORLD]
 Please do not store functions or variables inside of this file unless absolutely neccesary.
 */
+//test comment
 
 #include "common.h" //common.h holds key precompilers 
 #include "Functions.h"
