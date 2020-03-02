@@ -18,7 +18,7 @@ sf::RectangleShape getShape(int xAxis, int yAxis, int tileVal, K& textureParent)
         square.setFillColor(sf::Color::Black);
     }
     else if (tileVal == 6) {
-        square.setFillColor(sf::Color::Black);
+        square.setFillColor(sf::Color::Blue);
 
     }
     else {
