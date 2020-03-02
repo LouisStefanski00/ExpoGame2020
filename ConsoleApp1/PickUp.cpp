@@ -5,11 +5,9 @@ PickUp::PickUp() {
 	this->y = rand() % 18;
 	if (this->x < 8) {
 		currentAbility = 1;
-		std::cout << "One" << std::endl;
 	}
 	else {
 		currentAbility = 0;
-		std::cout << " Two" << std::endl;
 	}
 
 }
