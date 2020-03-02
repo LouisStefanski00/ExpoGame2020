@@ -11,12 +11,12 @@ TO GET WORKING
 6. Click Apply then okay
 7. Try to compile the program, if it works GREAT! If not continue.
 8. Go back to Linker -> Input -> set to
-sfml-graphics-d.lib
-sfml-window-d.lib
-sfml-system-d.lib
-freetype.lib
-opengl32.lib
-winmm.lib
+sfml-graphics-d.lib;
+sfml-window-d.lib;
+sfml-system-d.lib;
+freetype.lib;
+opengl32.lib;
+winmm.lib;
 9. go to C/C++ -> Preprocessor -> Delete all options and set to
 WIN32
 _DEBUG
