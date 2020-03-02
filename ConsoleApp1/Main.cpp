@@ -2,7 +2,6 @@
 The main loop for the game, calls event handlers and stores key class objects [PLAYER, WORLD]
 Please do not store functions or variables inside of this file unless absolutely neccesary.
 */
-//test comment
 
 #include "common.h" //common.h holds key precompilers 
 #include "Functions.h"
@@ -32,7 +31,7 @@ int main()
     Player players;
     players.setLocation(playerStartPositionX, playerStartPositionY);
     world.createMap(mapWidth, mapLength); //creates map of n^2 where n is length. Note: length and width should be equal. 
-    world.generateEntities(3);
+    world.generateEntities(2);
     loadTextures(); //loads all texture files and fonts into memory
     players.playerObject.setTexture(&(playerTexture)); //loads player texture
 
@@ -72,7 +71,20 @@ int main()
                         window.draw(getShape(j, i, 2, players));
                     }
                     else if (world.map.at(index).z == '+') {
-                        window.draw(getShape(j, i, 5, players));
+                        int tempVal; //redo later as a function 
+                        for (int z = 0; z < world.entities.size(); ++z) { //finds index in entities
+                            if ((world.entities.at(z).x == j) && (world.entities.at(z).y == i)) {
+                                tempVal = z;
+                            }
+                        }
+                        switch (world.entities.at(tempVal).currentAbility) { //determins texture
+                        case 0:
+                            window.draw(getShape(j, i, 5, players));
+                            break;
+                        case 1:
+                            window.draw(getShape(j, i, 6, players));
+                            break;
+                        }
                     }
                     else {
                         window.draw(getShape(j, i, 1, world));
