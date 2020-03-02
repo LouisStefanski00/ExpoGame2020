@@ -3,7 +3,7 @@
 PickUp::PickUp() {
 	this->x = rand() % 18;
 	this->y = rand() % 18;
-	if (this->x < 8) {
+	if (this->x < 8) { //sets currentAbility
 		currentAbility = 1;
 	}
 	else {
