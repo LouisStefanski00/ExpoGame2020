@@ -22,7 +22,7 @@ public:
 inline Player::Player() {
 	currentBreaks = totalBreaks;
 	playerObject.setSize(sf::Vector2f(50, 50)); //sets size of player object
-	currentHealth = maxHealth;
+	currentHealth = 79;
 	realX = 0;
 	realY = 0;
 	x = 0;
