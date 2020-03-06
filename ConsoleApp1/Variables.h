@@ -4,7 +4,6 @@
 
 sf::Font font;
 
-sf::Texture playerTexture;
 sf::Texture rockTexture;
 sf::Texture dirtTexture;
 sf::Image icon;
@@ -12,7 +11,7 @@ sf::Image icon;
 std::string gameName = "Demo 1.1";
 
 bool fogOfDisplay = false;
-bool fpsEnabled = true;
+bool fpsEnabled = false;
 
 int tileLength = 50;
 int tileWidth = 50;

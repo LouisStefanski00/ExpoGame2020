@@ -16,15 +16,14 @@ void World::createMap(int mapWidth, int mapHeight)
 	for (int i = 0; i < mapHeight; ++i) { //loops through columns; y-cord
 		for (int j = 0; j < mapWidth; ++j) { //loops through rows; x-cord
 			if (j % 2 == 0) {
-				this->map.push_back(tile{ j, i, '=' });
+				this->map.push_back(tile{ j, i, '=', OPEN});
 			}
 			else if (i < 5) {
-				this->map.push_back(tile{ j, i, '=' });
+				this->map.push_back(tile{ j, i, '=', OPEN});
 
 			}
 			else {
-				this->map.push_back(tile{ j, i, '*' });
-
+				this->map.push_back(tile{ j, i, '*', SOLID});
 			}
 		}
 	}
@@ -34,11 +33,24 @@ void World::generateEntities(int numOfEntities) {
 	for (int i = 0; i < numOfEntities; ++i) {
 		PickUp* pickUp = new PickUp;
 		this->map.at(((pickUp->y * mapWidth) + pickUp->x)).z = '+';
+		this->map.at(((pickUp->y * mapWidth) + pickUp->x)).identifier = ABILITY;
+
 		this->entities.push_back(*pickUp);
 	}
 }
 
 
 World::World() {
+	lastClockTime = 0;
+}
+
+void World::getFps(bool fpsEnabled) //gets fps
+{
+	if (fpsEnabled) { //displays fps
+		float currentTime = clock.restart().asSeconds();
+		float fps = 1.f / (currentTime);
+		lastClockTime = currentTime;
+		std::cout << fps << std::endl;
+	}
 
 }

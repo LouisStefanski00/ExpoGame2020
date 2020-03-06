@@ -13,14 +13,14 @@ Please do not store functions or variables inside of this file unless absolutely
 /*
 TO DO
 ------
-Updated files --- all of them...
 ADD ENEMYS
+
+Enemy - add in texture, create spawn criteria, create collision, create rendering, create other actions..., use sf::Time with clock in window to determine time intervals
 ADD SPECIAL TILES?
 IMPROVE MAP GENERATION
 SOUNDS?
 SKINS?
 */
-
 
 
 int main()
@@ -29,14 +29,19 @@ int main()
     World world; //map
     EventHandler handler; //event handler
     Player players;
-    players.setLocation(playerStartPositionX, playerStartPositionY);
+    Enemy enemy(&players); //creates enemy object for testing
+    world.enemies.push_back(enemy); //adds enemy to enemy vector
+
+   // players.setLocation(playerStartPositionX, playerStartPositionY);
     world.createMap(mapWidth, mapLength); //creates map of n^2 where n is length. Note: length and width should be equal. 
     world.generateEntities(2);
-    loadTextures(); //loads all texture files and fonts into memory
-    players.playerObject.setTexture(&(playerTexture)); //loads player texture
 
-    sf::Clock clock;
-    float lastTime = 0;
+    //test code to test enemy collision 
+    world.map.at((world.enemies.at(0).yPosition * mapWidth) + world.enemies.at(0).xPosition).z = 'E'; //this will allow for a 'special' identifier and serves as visual in the 2d vector
+    world.map.at((world.enemies.at(0).yPosition * mapWidth) + world.enemies.at(0).xPosition).identifier = SOLID; //object immediately gains collision bc its said to be SOLID  
+
+    loadTextures(); //loads all texture files and fonts into memory
+    players.getTexture(); //sets players texture
     int pindex = 0; //used to identify player index replace later
 
     //sfml definitions 
@@ -46,12 +51,7 @@ int main()
     while (window.isOpen()) //event loop
     {
         sf::Event event;
-        if (fpsEnabled) { //displays fps
-            float currentTime = clock.restart().asSeconds();
-            float fps = 1.f / (currentTime);
-            lastTime = currentTime;
-            std::cout << fps << std::endl;
-        }
+        world.getFps(fpsEnabled);
 
         while (window.pollEvent(event))
         {
@@ -60,46 +60,10 @@ int main()
         }
         window.clear();
         handler.input(world, players); //handles input 
-        int index = 0;
-        //loops through map vector drawing tiles onto the screen. 
-        for (int i = 0; i < world.mapHeight; ++i) { //y-axis
-            for (int j = 0; j < world.mapWidth; ++j) { //x-axis
-                    if (world.map.at(index).z == '=') {
-                        window.draw(getShape(j, i, 0, players));
-                    }
-                    else if (world.map.at(index).z == 'P') {
-                        window.draw(getShape(j, i, 2, players));
-                    }
-                    else if (world.map.at(index).z == '+') {
-                        int tempVal; //redo later as a function 
-                        for (int z = 0; z < world.entities.size(); ++z) { //finds index in entities
-                            if ((world.entities.at(z).x == j) && (world.entities.at(z).y == i)) {
-                                tempVal = z;
-                            }
-                        }
-                        switch (world.entities.at(tempVal).currentAbility) { //determins texture
-                        case 0:
-                            window.draw(getShape(j, i, 5, players));
-                            break;
-                        case 1:
-                            window.draw(getShape(j, i, 6, players));
-                            break;
-                        }
-                    }
-                    else {
-                        window.draw(getShape(j, i, 1, world));
-                    }
-                    index += 1;
-            }
-        }
-        //displays remaining breaks
-        window.draw(players.playerObject); //draws player texture to screen
-        window.draw(drawTextToScreen(((tileWidth * mapWidth) - 320), 0, 26, ("Total Breaks Remaining : " + std::to_string(players.currentBreaks))));
-        //displays health
-        window.draw(drawTextToScreen(5, 0, 26, ("Health : " + std::to_string(players.currentHealth))));
+        drawMainWindow(window, players, world); //draws map to the scren
+        drawEntities(window, players, world.enemies); //draws additional entities such as player, enemies, and text
+        window.display(); //displays screen objects
 
-        window.display(); //displays map
-        
     }
 
     return 0;

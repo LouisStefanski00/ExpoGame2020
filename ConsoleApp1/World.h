@@ -4,23 +4,25 @@ This file defines the World class and also defines the tile struct used to creat
 #pragma once
 #include "common.h"
 #include "PickUp.h"
-
-struct tile { //tile is a struct that defines an x and y cord for the object. The z field is used to denote the tile identifier. Please see
-	//World.cpp file for listing of identifications 
-	int x, y; 
-	char z; //tile definition '=' = pathway; 'P' = player; '*' = rock; '+' = pick up
-};
-
+#include "Enemy.h"
 
 class World
 {
 public:
-
 	void createMap(int mapWidth, int mapHeight);
 	void generateEntities(int numOfEntities); //generities numOfEntities entities
+	void getFps(bool fpsEnabled); //function to get fps
+
 	std::vector<tile> map; //stores a vector of tile objects denoting key map characteristics. 
+	std::vector<PickUp> entities; //holds all active entities on screen
+	std::vector<Enemy> enemies;
+
 	int mapHeight;
 	int mapWidth;
-	std::vector<PickUp> entities;
+
+	double lastClockTime; //last time the clock recorded
+
+	sf::Clock clock; //window clock
+
 	World();
 };
