@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "Variables.h"
+#include "Enemy.h"
 
 //A function to draw a tile on the screen. Takes x and y cords and a tileVal as defined.
 template <typename K>
@@ -100,7 +101,7 @@ void drawEntities(K& window, V& players, P& enemies) { //draws player, enemies, 
     window.draw(players.playerObject); //draws player texture to screen
 
     if (enemies.size() > 0) { //all of the code in this if statement will later be removed
-        enemies.at(0).enemyObject.setPosition(enemies.at(0).xPosition * 50, enemies.at(0).yPosition);
+        enemies.at(0).enemyObject.setPosition(enemies.at(0).xPosition * 50, enemies.at(0).yPosition * 50);
         window.draw(enemies.at(0).enemyObject);
         //enemies.at(0).takeDamage(20, enemies);
     }
@@ -109,4 +110,13 @@ void drawEntities(K& window, V& players, P& enemies) { //draws player, enemies, 
     //displays health
     window.draw(drawTextToScreen(5, 0, 26, ("Health : " + std::to_string(players.currentHealth))));
 
+}
+
+template <typename K, typename V>
+void spawnEnemy(K* player, V& map) { //spawns an enemy with reference to players location, create spawn delay
+    Enemy* ptr = new Enemy(player, map);
+    int location = (ptr->yPosition * mapWidth) + ptr->xPosition;
+    map.map.at(location).identifier = SOLID;
+    map.map.at(location).z = 'E';
+    map.enemies.emplace_back(*ptr);
 }

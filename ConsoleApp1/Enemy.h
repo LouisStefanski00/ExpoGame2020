@@ -18,8 +18,9 @@ public:
 
 	void setLocation(int xPosition, int yPosition);
 
-	template <typename K>
-	Enemy(K* player);
+	template <typename K, typename V>
+	Enemy(K* player, V& map);
+	Enemy(); //dummy constructor
 	~Enemy();
 };
 
@@ -61,12 +62,18 @@ inline void Enemy::getTexture(K& player) //a function called whenever a texture 
 	}
 }
 
-template<typename K>
-inline Enemy::Enemy(K* player) //called on enemy objects creation
+inline Enemy::Enemy() {}
+
+template<typename K, typename V>
+inline Enemy::Enemy(K* player, V& map) //called on enemy objects creation
 {
 	this->health = 100;
-	this->xPosition = 6; //delete once testing is done
-	this->yPosition = 0; //delete once testing is done
+	switch (player->facing) { //determins enemy x and y cords
+	default:
+		this->xPosition = (player->x + 1); //delete once testing is done
+		this->yPosition = player->y; //delete once testing is done
+		break;
+	}
 	this->attackDamage = 20;
 	this->enemyObject.setSize(sf::Vector2f(50, 50)); //sets size of player object
 	this->getTexture(*player);

@@ -29,16 +29,10 @@ int main()
     World world; //map
     EventHandler handler; //event handler
     Player players;
-    Enemy enemy(&players); //creates enemy object for testing
-    world.enemies.push_back(enemy); //adds enemy to enemy vector
 
    // players.setLocation(playerStartPositionX, playerStartPositionY);
     world.createMap(mapWidth, mapLength); //creates map of n^2 where n is length. Note: length and width should be equal. 
     world.generateEntities(2);
-
-    //test code to test enemy collision 
-    world.map.at((world.enemies.at(0).yPosition * mapWidth) + world.enemies.at(0).xPosition).z = 'E'; //this will allow for a 'special' identifier and serves as visual in the 2d vector
-    world.map.at((world.enemies.at(0).yPosition * mapWidth) + world.enemies.at(0).xPosition).identifier = SOLID; //object immediately gains collision bc its said to be SOLID  
 
     loadTextures(); //loads all texture files and fonts into memory
     players.getTexture(); //sets players texture
@@ -60,6 +54,7 @@ int main()
         }
         window.clear();
         handler.input(world, players); //handles input 
+        std::cout << world.enemies.size() << std::endl;
         drawMainWindow(window, players, world); //draws map to the scren
         drawEntities(window, players, world.enemies); //draws additional entities such as player, enemies, and text
         window.display(); //displays screen objects

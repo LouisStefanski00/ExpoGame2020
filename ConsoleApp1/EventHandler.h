@@ -29,9 +29,11 @@ inline void EventHandler::input(K& map, V& player)
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))) { //breaks block
-			player.move(WALKWAY, tileWidth, tileLength, map, player.x + 1, player.y);
+			if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != 'E'))
+			//player.move(WALKWAY, tileWidth, tileLength, map, player.x + 1, player.y);
 			player.facing = RIGHT;
 			player.currentBreaks -= 1;
+			spawnEnemy(&player, map); //spawns enemy
 			sf::sleep(sf::milliseconds(player.speed * 15.0)); 
 		}
 	}
