@@ -29,12 +29,13 @@ inline void EventHandler::input(K& map, V& player)
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))) { //breaks block
-			if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != 'E'))
-			//player.move(WALKWAY, tileWidth, tileLength, map, player.x + 1, player.y);
-			player.facing = RIGHT;
-			player.currentBreaks -= 1;
-			spawnEnemy(&player, map); //spawns enemy
-			sf::sleep(sf::milliseconds(player.speed * 15.0)); 
+			if ((map.map.at(((player.y * map.mapWidth) + (player.x + 1))).z != 'E')) { //add random chance to spawn enemy
+				//player.move(WALKWAY, tileWidth, tileLength, map, player.x + 1, player.y);
+				player.facing = RIGHT;
+				player.currentBreaks -= 1;
+				spawnEnemy(&player, map); //spawns enemy
+				sf::sleep(sf::milliseconds(player.speed * 15.0));
+			}
 		}
 	}
 
@@ -55,7 +56,8 @@ inline void EventHandler::input(K& map, V& player)
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))){ //breaks block
 			player.currentBreaks -= 1;
 			player.facing = LEFT;
-			player.move(WALKWAY, tileWidth, tileLength, map, player.x - 1, player.y);
+			//player.move(WALKWAY, tileWidth, tileLength, map, player.x - 1, player.y);
+			spawnEnemy(&player, map); //spawns enemy
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 	}
@@ -77,7 +79,8 @@ inline void EventHandler::input(K& map, V& player)
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))){ //breaks block
 			player.currentBreaks -= 1;
 			player.facing = DOWN;
-			player.move(WALKWAY, tileWidth, tileLength, map, player.x, player.y + 1);
+			//player.move(WALKWAY, tileWidth, tileLength, map, player.x, player.y + 1);
+			spawnEnemy(&player, map); //spawns enemy
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 	}
@@ -99,7 +102,8 @@ inline void EventHandler::input(K& map, V& player)
 		else if ((player.currentBreaks > 0) && (sf::Keyboard::isKeyPressed(sf::Keyboard::K))) { //breaks block
 			player.currentBreaks -= 1;
 			player.facing = UP;
-			player.move(WALKWAY, tileWidth, tileLength, map, player.x, player.y - 1);
+			//player.move(WALKWAY, tileWidth, tileLength, map, player.x, player.y - 1);
+			spawnEnemy(&player, map); //spawns enemy
 			sf::sleep(sf::milliseconds(player.speed * 15.0));
 		}
 	}

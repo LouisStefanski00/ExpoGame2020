@@ -101,9 +101,11 @@ void drawEntities(K& window, V& players, P& enemies) { //draws player, enemies, 
     window.draw(players.playerObject); //draws player texture to screen
 
     if (enemies.size() > 0) { //all of the code in this if statement will later be removed
-        enemies.at(0).enemyObject.setPosition(enemies.at(0).xPosition * 50, enemies.at(0).yPosition * 50);
-        window.draw(enemies.at(0).enemyObject);
-        //enemies.at(0).takeDamage(20, enemies);
+        for (int i = 0; i < enemies.size(); ++i) {
+            enemies.at(i).enemyObject.setPosition(enemies.at(i).xPosition * 50, enemies.at(i).yPosition * 50);
+            window.draw(enemies.at(i).enemyObject);
+            //enemies.at(0).takeDamage(20, enemies);
+        }
     }
 
     window.draw(drawTextToScreen(((tileWidth * mapWidth) - 320), 0, 26, ("Total Breaks Remaining : " + std::to_string(players.currentBreaks))));
@@ -119,4 +121,13 @@ void spawnEnemy(K* player, V& map) { //spawns an enemy with reference to players
     map.map.at(location).identifier = SOLID;
     map.map.at(location).z = 'E';
     map.enemies.emplace_back(*ptr);
+}
+
+template <typename K, typename V>
+void encounterHandler(K& player, V& map) {
+    for (int i = 0; i < map.enemies.size(); ++i) { //attacks player if player is in an enemy guard block
+        if (((player.y * mapLength) + player.x) == map.enemies.at(i).guardBlock) {
+            map.enemies.at(i).attack(player); //attacks player
+        }
+    }
 }

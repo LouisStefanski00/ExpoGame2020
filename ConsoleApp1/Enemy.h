@@ -6,6 +6,7 @@ public:
 	int health;
 	int xPosition, yPosition;
 	int attackDamage;
+	int guardBlock;
 
 	sf::RectangleShape enemyObject;
 
@@ -68,10 +69,28 @@ template<typename K, typename V>
 inline Enemy::Enemy(K* player, V& map) //called on enemy objects creation
 {
 	this->health = 100;
-	switch (player->facing) { //determins enemy x and y cords
+	switch (player->facing) { //determins enemy x and y cords nd guard block
+	case(0): //up
+		this->xPosition = (player->x);
+		this->yPosition = player->y - 1;
+		this->guardBlock = ((yPosition + 1) * 18) + xPosition; //sub mapLength var
+		break;
+	case(1): //down
+		this->xPosition = (player->x);
+		this->yPosition = player->y + 1;
+		this->guardBlock = ((yPosition - 1 ) * 18) + xPosition; //sub mapLength var
+		break;
+	case(2): //left
+		this->xPosition = (player->x -1);
+		this->yPosition = player->y;
+		this->guardBlock = (yPosition * 18) + xPosition + 1; //sub mapLength var
+		break;
+	case(3): //right
+		this->xPosition = (player->x + 1);
+		this->yPosition = player->y;
+		this->guardBlock = (yPosition * 18) + xPosition - 1; //sub mapLength var
+		break;
 	default:
-		this->xPosition = (player->x + 1); //delete once testing is done
-		this->yPosition = player->y; //delete once testing is done
 		break;
 	}
 	this->attackDamage = 20;

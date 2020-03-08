@@ -15,7 +15,7 @@ TO DO
 ------
 ADD ENEMYS
 
-Enemy - add in texture, create spawn criteria, create collision, create rendering, create other actions..., use sf::Time with clock in window to determine time intervals
+Enemy - add in texture,,,, create other actions..., use sf::Time with clock in window to determine time intervals
 ADD SPECIAL TILES?
 IMPROVE MAP GENERATION
 SOUNDS?
@@ -54,9 +54,9 @@ int main()
         }
         window.clear();
         handler.input(world, players); //handles input 
-        std::cout << world.enemies.size() << std::endl;
         drawMainWindow(window, players, world); //draws map to the scren
         drawEntities(window, players, world.enemies); //draws additional entities such as player, enemies, and text
+        encounterHandler(players, world); //handles attacks
         window.display(); //displays screen objects
 
     }
