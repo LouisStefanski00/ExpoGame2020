@@ -13,7 +13,7 @@ PickUp::PickUp() {
 }
 
 PickUp::~PickUp() {
-	std::cout << "PickUp entity destroyed" << std::endl;
+//	std::cout << "PickUp entity destroyed" << std::endl;
 }
 
 void PickUp::ability(Player& player) {

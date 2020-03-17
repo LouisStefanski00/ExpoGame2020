@@ -8,39 +8,63 @@ public:
 	int attackDamage;
 	int guardBlock;
 
+	sf::Time speed = sf::seconds(1);
 	sf::RectangleShape enemyObject;
 
-	template <typename K>
-	void attack(K& player);
+	template <typename K, typename V>
+	void attack(K& player, V map);
 	template <typename V>
-	void takeDamage(int damageAmount, V& enemiesList);
+	void takeDamage(int damageAmount, V& map);
 	template <typename K>
 	void getTexture(K& player);
 
 	void setLocation(int xPosition, int yPosition);
 
+	bool alive = true;
 	template <typename K, typename V>
 	Enemy(K* player, V& map);
 	Enemy(); //dummy constructor
 	~Enemy();
 };
 
-template<typename K>
-inline void Enemy::attack(K& player) //a function that allows the enemy object to attack a player object
+template<typename K, typename V>
+inline void Enemy::attack(K& player, V map) //a function that allows the enemy object to attack a player object
 {
-	player.takeDamage(20);
+	if (speed < sf::seconds(0)) {
+		player.takeDamage(20);
+		speed = sf::seconds(1);
+	}
+	else {
+		speed -= map.timeElaspsed;
+	}
 }
 
 template <typename V>
-inline void Enemy::takeDamage(int damageAmount, V& enemiesList) //a function that a player object would call on the enemy object to damage it
+inline void Enemy::takeDamage(int damageAmount, V& map) //a function that a player object would call on the enemy object to damage it
 {
 	if (this->health - damageAmount > 0) {
 		this->health -= damageAmount;
 	}
 	else {
-		this->health = 0;
-		enemiesList.erase(enemiesList.begin()); //removes enemy from entity list, assumes 1 entity could exist at time...
-		this->~Enemy(); //enable after enemy is incorporated into conditional draw loop
+		this->health = 1;
+		int location = (this->yPosition * 18) + this->xPosition;
+		int vecIndx = -1;
+		for (int i = 0; i < map.enemies.size(); ++i) {
+			if (((this->yPosition * 18) + this->xPosition) == location) {
+				vecIndx = i;
+			}
+		}
+		if (vecIndx != -1) {
+			this->alive = false; //redundancy 
+			for (int i = 0; i < map.enemies.size(); ++i) {
+				if (((this->yPosition * 18) + this->xPosition) == location) {
+					map.enemies.erase(map.enemies.cbegin() + i, map.enemies.cbegin() + i);
+				}
+			}
+			//map.enemies.erase(map.enemies.cbegin() + (vecIndx) , map.enemies.cbegin() + (vecIndx)); //removes enemy from entity list, assumes 1 entity could exist at time...
+			map.map.at(location).z = '=';
+			map.map.at(location).identifier = OPEN;
+		}
 	}
 }
 

@@ -46,10 +46,9 @@ World::World() {
 
 void World::getFps(bool fpsEnabled) //gets fps
 {
+	timeElaspsed = clock.getElapsedTime();
 	if (fpsEnabled) { //displays fps
-		float currentTime = clock.restart().asSeconds();
-		float fps = 1.f / (currentTime);
-		lastClockTime = currentTime;
+		float fps = sf::seconds(1) / (timeElaspsed);
 		std::cout << fps << std::endl;
 	}
 

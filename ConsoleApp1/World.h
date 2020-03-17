@@ -22,7 +22,8 @@ public:
 
 	double lastClockTime; //last time the clock recorded
 
-	sf::Clock clock; //window clock
+	sf::Clock clock; //window clocks
+	sf::Time timeElaspsed;
 
 	World();
 };

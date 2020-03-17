@@ -11,12 +11,9 @@ Please do not store functions or variables inside of this file unless absolutely
 #include "PickUp.h"
 
 /*
-TO DO
-------
-ADD ENEMYS
-
-Enemy - add in texture,,,, create other actions..., use sf::Time with clock in window to determine time intervals
-ADD SPECIAL TILES?
+TO DO  
+------ //NEED TO ADD ABILITY FOR ENEMY CLASS TO DETERMINE 
+Enemy - add in texture, create other actions...
 IMPROVE MAP GENERATION
 SOUNDS?
 SKINS?
@@ -52,11 +49,13 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+        world.clock.restart();
         window.clear();
-        handler.input(world, players); //handles input 
-        drawMainWindow(window, players, world); //draws map to the scren
-        drawEntities(window, players, world.enemies); //draws additional entities such as player, enemies, and text
+        (players.playerAlive) ? handler.input(world, players) : players.reset(world); //handles input if player is alive
         encounterHandler(players, world); //handles attacks
+        drawMainWindow(window, players, world); //draws map to the scren
+        drawEntities(window, players, world.enemies, world); //draws additional entities such as player, enemies, and text
         window.display(); //displays screen objects
 
     }

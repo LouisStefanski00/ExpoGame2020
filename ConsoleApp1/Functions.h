@@ -96,21 +96,27 @@ void drawMainWindow(K& window, V& players, P& world) {
     }
 }
 
-template <typename K, typename V, typename P>
-void drawEntities(K& window, V& players, P& enemies) { //draws player, enemies, and text
-    window.draw(players.playerObject); //draws player texture to screen
+template <typename K, typename V, typename P, typename S>
+void drawEntities(K& window, V& players, P& enemies, S& map) { //draws player, enemies, and text
 
     if (enemies.size() > 0) { //all of the code in this if statement will later be removed
-        for (int i = 0; i < enemies.size(); ++i) {
+        int max = enemies.size();
+        for (int i = 0; i < max; ++i) {
+            if (enemies.size() > 1) {
+                std::cout << enemies.at(1).yPosition << std::endl;
+            }
             enemies.at(i).enemyObject.setPosition(enemies.at(i).xPosition * 50, enemies.at(i).yPosition * 50);
-            window.draw(enemies.at(i).enemyObject);
-            //enemies.at(0).takeDamage(20, enemies);
+            if (enemies.at(i).alive) {
+                window.draw(enemies.at(i).enemyObject);
+            }
+            max = enemies.size();
         }
     }
 
     window.draw(drawTextToScreen(((tileWidth * mapWidth) - 320), 0, 26, ("Total Breaks Remaining : " + std::to_string(players.currentBreaks))));
     //displays health
     window.draw(drawTextToScreen(5, 0, 26, ("Health : " + std::to_string(players.currentHealth))));
+    window.draw(players.playerObject); //draws player texture to screen
 
 }
 
@@ -118,16 +124,33 @@ template <typename K, typename V>
 void spawnEnemy(K* player, V& map) { //spawns an enemy with reference to players location, create spawn delay
     Enemy* ptr = new Enemy(player, map);
     int location = (ptr->yPosition * mapWidth) + ptr->xPosition;
-    map.map.at(location).identifier = SOLID;
-    map.map.at(location).z = 'E';
-    map.enemies.emplace_back(*ptr);
+    if (map.map.at(location).z != 'E') {
+        map.map.at(location).identifier = SOLID;
+        map.map.at(location).z = 'E';
+        map.enemies.emplace_back(*ptr);
+    }
+    else {
+        
+       }
 }
 
 template <typename K, typename V>
 void encounterHandler(K& player, V& map) {
     for (int i = 0; i < map.enemies.size(); ++i) { //attacks player if player is in an enemy guard block
         if (((player.y * mapLength) + player.x) == map.enemies.at(i).guardBlock) {
-            map.enemies.at(i).attack(player); //attacks player
+            if (map.enemies.at(i).alive) {
+                map.enemies.at(i).attack(player, map); //attacks player
+            }
+        }
+    }
+    player.update(map);
+}
+
+template <typename V>
+int findEnemy(V& map, int location) {
+    for (int i = 0; i < map.enemies.size(); ++i) {
+        if (((map.enemies.at(i).yPosition * mapWidth) + map.enemies.at(i).xPosition) == location) {
+            return i;
         }
     }
 }

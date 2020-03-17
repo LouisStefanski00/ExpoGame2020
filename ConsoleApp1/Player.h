@@ -19,7 +19,12 @@ public:
 	int currentHealth;
 	int attackDamage = 20;
 
+	sf::Time maxSpeed = sf::seconds(0.1);
+	sf::Time currentSpeed = maxSpeed;
+
 	double speed = 7;
+
+	bool playerAlive;
 
 	FACING facing;
 	sf::RectangleShape playerObject; //phyiscal player object present in game world
@@ -27,12 +32,16 @@ public:
 
 	template <typename K>
 	void move(landingTile tile, int tileWidth, int tileLength, K& map, int x, int y);
-	template <typename K>
-	void attack(K& enemy);
+	template <typename K, typename V>
+	void attack(K& enemy, V& enemyList);
 
 	void setLocation(int x, int y);
 	void takeDamage(int damageAmount);
 	void getTexture();
+	template <typename K>
+	void reset(K& map);
+	template <typename K>
+	void update(K& map);
 
 	Player();
 	~Player();
@@ -40,7 +49,13 @@ public:
 
 inline void Player::takeDamage(int damageAmount) //a function called by an enemy object to damage the player object
 {
-	this->currentHealth -= damageAmount;
+	if ((currentHealth - damageAmount) > 0) {
+		this->currentHealth -= damageAmount;
+	}
+	else {
+		currentHealth = 0;
+		playerAlive = false;
+	}
 }
 
 inline Player::Player() { //called when a new player object is created
@@ -52,8 +67,26 @@ inline Player::Player() { //called when a new player object is created
 	realY = 0;
 	x = 0;
 	y = 0;
+	playerAlive = true;
 }
 
+template <typename V>
+inline void Player::reset(V& map) { //resets player after death
+	map.map.at((y * 18) + x).z = '=';
+	map.map.at((y * 18) + x).identifier = OPEN;
+	currentBreaks = totalBreaks;
+	playerObject.setSize(sf::Vector2f(50, 50)); //sets size of player object
+	currentHealth = 79;
+	facing = RIGHT;
+	realX = 0;
+	realY = 0;
+	x = 0;
+	y = 0;
+	map.map.at(0).z = 'P'; //replace hard coded values
+	map.map.at(0).identifier = OPEN;
+	playerObject.setPosition(sf::Vector2f((18 * this->x), (18 * this->y)));
+	playerAlive = true;
+}
 inline Player::~Player() { //called when the player object is destroyed
 	std::cout << "Player object destroyed." << std::endl;
 }
@@ -74,7 +107,6 @@ inline void Player::move(landingTile tile, int tileWidth, int tileLength, K& map
 	this->x = x;
 	this->y = y;
 	switch (tile) {
-
 	case(WALKWAY): //movement protocol for walkway tiles
 		switch (this->facing) { 
 		case(UP):
@@ -181,8 +213,16 @@ inline void Player::getTexture() { //gets player texture based on player facing
 	playerObject.setTexture(&textureVariable);
 }
 
-template<typename K>
-inline void Player::attack(K& enemy) //a function called by a player object that attacks an enemy object calling the enemy objects take damage function
+template<typename K, typename V>
+inline void Player::attack(K& enemy, V& map) //a function called by a player object that attacks an enemy object calling the enemy objects take damage function
 {
-	enemy.takeDamage(this->attackDamage);
+	enemy.takeDamage(this->attackDamage, map);
+}
+
+template <typename K>
+inline void Player::update(K& map)  //updates players speed 
+{
+	if (currentSpeed < maxSpeed) {
+		currentSpeed += map.timeElaspsed;
+	}
 }

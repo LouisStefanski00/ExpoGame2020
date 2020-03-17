@@ -9,5 +9,5 @@ void Enemy::setLocation(int xPosition, int yPosition) //sets enemy objects locat
 
 Enemy::~Enemy() //called when enemy object is destroyed
 {
-	std::cout << "Enemy object destroyed" << std::endl;
+	//std::cout << "Enemy object destroyed" << std::endl;
 }
